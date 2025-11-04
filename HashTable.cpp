@@ -168,74 +168,75 @@ HashTable::HashTable(size_t initCapacity) {
 
  } //end operator[]
 
- /**
- * keys returns a std::vector (C++ version of ArrayList, or simply list/array)
- * with all of the keys currently in the table. The length of the vector should be
- * the same as the size of the hash table.
+/**
+ * keys creates and returns a vector containing all the keys currently occupied in the hash table
+ * @return the newly created vector of strings
  */
- std::vector<string> HashTable::keys() const {
+vector<string> HashTable::keys() const {
 
+ vector<string> keys; //sets up a new vector called keys
 
+ for (size_t i = 0; i < buckets.size(); i++) {
+
+  if (buckets.at(i).type == HashTableBucket::BucketType::NORMAL) {
+   keys.push_back(buckets.at(i).key);
+  } //only adds the key for the bucket if the type is NORMAL
+
+ } //end for
+
+ return keys;
 
 } //end keys
 
- /**
- * alpha returns the current load factor of the table, or size/capacity. Since
- * alpha returns a double,make sure to properly cast the size and capacity, which
- * are size_t, to avoid integer division. You can cast a size_t num to a double in
- * C++ like:
-                  static_cast<double>(num)
- The time complexity for
- * this method must be O(1).
- */ 
+/**
+ * alpha returns the value of (size / capacity) cast as a double
+ * @return the double value resulted from the division
+ */
 double HashTable::alpha() const {
 
-
+ double load = static_cast<double>(size()) / static_cast<double>(capacity());
+ return load;
 
 } //end alpha
 
 /**
- * capacity returns how many buckets in total are in the hash table. The time
- * complexity for this algorithm must be O(1).
+ * capacity returns the total number of buckets in the hash table by calling the method size()
+ * @return the size_t variable returned by size()
  */
- size_t HashTable::capacity() const {
+size_t HashTable::capacity() const {
 
-
+ return buckets.size();
 
 } //end capacity
- 
+
 /**
- * The size method returns how many key-value pairs are in the hash table. The
- * time complexity for this method must be O(1)
+ * size returns the size_t variable sizeOfTable which changes as elements are added/removed from the table
+ * @return the size of the table
  */
- size_t HashTable::size() const {
+size_t HashTable::size() const {
 
-
+ return sizeOfTable;
 
 } //end size
 
 /**
- * operator<< is another example of operator overloading in C++, similar to
- * operator[]. The friend keyword only needs to appear in the class declaration,
- * but not the definition. In addition, operator<< is not a method of HashTable,
- * so do not put HashTable:: before it when defining it. operator<< will allow us
- * to print the contents of our hash table using the normal syntax:
- cout <<
- * myHashTable << endl;
-   You should only print the buckets which are occupied,
- * and along with each item you will print which bucket (the index of the bucket)
- * the item is in. To make it easy, I suggest creating a helper method called
- * something like printMe() that returns a string of everything in the table. An
- * example which uses open addressing for collision resolution could print
- * something like:
-
- Bucket 5: <James, 4815>
- Bucket 2: <Juliet, 1623>
- Bucket
- * 11: <Hugo, 42108>
+ * operator<< runs through the hash table and prints out the bucket, key, and value for each bucket if that bucket is occupied
+ * @param os ostream used for formatting and printing
+ * @param hashTable the hashTable that is being iterated through for printing its contents
+ * @return os needed to properly exit the method after printing
  */
- ostream& operator<<(ostream& os, const HashTable& hashTable) {
+ostream& operator<<(ostream& os, const HashTable& hashTable) {
 
+ for (size_t i = 0; i < hashTable.size(); i++) {
 
+  HashTableBucket current = hashTable.buckets[i];
+
+  if (current.type == HashTableBucket::BucketType::NORMAL) {
+   os << "Bucket " << i << " has the key " << current.key << " that contains " << current.value << endl;
+  } //prints message to console if bucket is occupied; the type is NORMAL
+
+ } //end for
+
+ return os;
 
 } //end operator<<

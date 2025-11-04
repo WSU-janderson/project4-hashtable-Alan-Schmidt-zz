@@ -45,7 +45,7 @@ public:
     //variables
     vector<HashTableBucket> buckets;
     vector<size_t> offsets;
-    size_t size_of_table = 0;
+    size_t sizeOfTable = 0;
 
     //method headers
     HashTable(size_t initCapacity = 8);
