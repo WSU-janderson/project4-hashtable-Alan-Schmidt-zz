@@ -11,7 +11,9 @@
 */
 HashTableBucket::HashTableBucket() {
 
-
+  key = "";
+  value = 0;
+  type = BucketType::ESS;
 
 } //end HashTableBucket no parameter constructor
 
@@ -21,7 +23,9 @@ HashTableBucket::HashTableBucket() {
 */
 HashTableBucket::HashTableBucket(std::string key, int value) {
 
-
+ this->key = key;
+ this->value = value;
+ type = BucketType::NORMAL;
 
 } //end HashTableBucket constructor
 
@@ -31,7 +35,9 @@ HashTableBucket::HashTableBucket(std::string key, int value) {
 */
 void HashTableBucket::load(std::string key, int value) {
 
-
+ this->key = key;
+ this->value = value;
+ type = BucketType::NORMAL;
 
 } //end load
 
@@ -41,7 +47,13 @@ void HashTableBucket::load(std::string key, int value) {
 */
 bool HashTableBucket::isEmpty() const {
 
+ if (type != BucketType::NORMAL) {
+  return true;
+ }
 
+ else {
+  return false;
+ }
 
 } //end isEmpty
 
@@ -50,8 +62,10 @@ bool HashTableBucket::isEmpty() const {
 * bucket's contents. Or if preferred, you could write a print method
 * instead.
 */
-friend std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
+std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
 
+ os << "The key " << bucket.key << " contains " << bucket.value << std::endl;
+ return os;
 
 } //end operator<<
 
