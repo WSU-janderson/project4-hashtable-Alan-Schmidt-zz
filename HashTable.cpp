@@ -4,6 +4,11 @@
 #include "HashTable.h"
 #include <iostream>
 #include <string>
+#include <random>
+#include <algorithm>
+
+//uses namespaced std for easier coding
+using namespace std;
 
 /**
  *This version of HashTableBucket is a default constructor that sets key to "", value to 0, and BucketType to ESS
@@ -22,7 +27,7 @@ HashTableBucket::HashTableBucket() {
  * @param key the string used as they key to decide where to place the value in the hash table
  * @param value the value to be put in the specifed key in the hash table
  */
-HashTableBucket::HashTableBucket(std::string key, int value) {
+HashTableBucket::HashTableBucket(string key, int value) {
 
  this->key = key;
  this->value = value;
@@ -35,7 +40,7 @@ HashTableBucket::HashTableBucket(std::string key, int value) {
  * @param key the string used as they key to decide where to place the value in the hash table
  * @param value the value to be put in the specifed key in the hash table
  */
-void HashTableBucket::load(std::string key, int value) {
+void HashTableBucket::load(string key, int value) {
 
  this->key = key;
  this->value = value;
@@ -65,23 +70,34 @@ bool HashTableBucket::isEmpty() const {
  * @param bucket the provided bucket of the hash table that will have its key and value printed
  * @return os needed to properly exit the method after printing
  */
-std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
+ostream& operator<<(ostream& os, const HashTableBucket& bucket) {
 
- os << "The key " << bucket.key << " contains " << bucket.value << std::endl;
+ os << "The key " << bucket.key << " contains " << bucket.value << endl;
 
  return os;
 
 } //end operator<<
 
 
-
 /**
- * Only a single constructor that takes an initial capacity for the table is
- * necessary. If no capacity is given, it defaults to 8 initially
+ * HashTable sets up the initial hash table with the provided number of buckets and creates a randomized vector for
+ * pseudo-random probing
+ * @param initCapacity the provided initial size of the capacity (if nothing is provided, it is set to 8)
  */
- HashTable::HashTable(size_t initCapacity) {
+HashTable::HashTable(size_t initCapacity) {
 
+ //sets the buckets vector's size to the provided initCapacity
+ buckets.resize(initCapacity);
 
+ for (size_t i = 0; i < initCapacity; i++) {
+  offsets.push_back(i);
+ } //adds size_t (i) to offsets vector for shuffling
+
+ //shuffles vector randomly
+ //code referenced from website link in project description
+ random_device rnd;
+ mt19937 gen(rnd());
+ shuffle(offsets.begin(), offsets.end(), gen);
 
 } //end HashTable
 
@@ -91,7 +107,7 @@ std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
  * unsucessful, such as when a duplicate is attempted to be inserted, the method
  * should return false
  */
- bool HashTable::insert(std::string key, size_t value) {
+ bool HashTable::insert(string key, size_t value) {
 
 
 
@@ -101,7 +117,7 @@ std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
  * If the key is in the table, remove will “erase” the key-value pair from the
  * table. This might just be marking a bucket as empty-after-remove
  */
- bool HashTable::remove(std::string key) {
+ bool HashTable::remove(string key) {
 
 
 
@@ -111,7 +127,7 @@ std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
  * contains returns true if the key is in the table and false if the key is not in
  * the table.
  */
- bool HashTable::contains(const std::string& key) const {
+ bool HashTable::contains(const string& key) const {
 
 
 
@@ -126,7 +142,7 @@ std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
  * signify the return value is invalid. It's also much better than throwing an
  * exception if the key is not found.
  */
- std::optional<int> HashTable::get(const std::string& key) const {
+ std::optional<int> HashTable::get(const string& key) const {
 
 
 
@@ -146,7 +162,7 @@ std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
  * results in undefined behavior. Simply put, you do not need to address attempts
  * to access keys not in the table inside the bracket operator method.
  */
- int& HashTable::operator[](const std::string& key) {
+ int& HashTable::operator[](const string& key) {
 
 
 
@@ -157,7 +173,7 @@ std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
  * with all of the keys currently in the table. The length of the vector should be
  * the same as the size of the hash table.
  */
- std::vector<std::string> HashTable::keys() const {
+ std::vector<string> HashTable::keys() const {
 
 
 
@@ -218,7 +234,7 @@ double HashTable::alpha() const {
  Bucket
  * 11: <Hugo, 42108>
  */
- friend std::ostream& operator<<(std::ostream& os, const HashTable& hashTable) {
+ ostream& operator<<(ostream& os, const HashTable& hashTable) {
 
 
 

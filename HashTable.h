@@ -5,9 +5,13 @@
 #define HashTable_h
 
 //includes code from the following libraries
+#include <optional>
 #include <string>
 #include <vector>
 #include <ostream>
+
+//uses namespaced std for easier coding
+using namespace std;
 
 class HashTableBucket {
 
@@ -17,20 +21,20 @@ public:
     enum class BucketType {NORMAL, ESS, EAR};
 
     //variables
-    std::string key;
+    string key;
     int value;
     BucketType type;
 
     //method headers
     HashTableBucket();
 
-    HashTableBucket(std::string key, int value);
+    HashTableBucket(string key, int value);
 
-    void load(std::string key, int value);
+    void load(string key, int value);
 
     bool isEmpty() const;
 
-    friend std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket);
+    friend ostream& operator<<(ostream& os, const HashTableBucket& bucket);
 
 }; //end HashTableBucket
 
@@ -39,21 +43,24 @@ class HashTable {
 public:
 
     //variables
+    vector<HashTableBucket> buckets;
+    vector<size_t> offsets;
+    size_t size_of_table = 0;
 
     //method headers
     HashTable(size_t initCapacity = 8);
 
-    bool insert(std::string key, size_t value);
+    bool insert(string key, size_t value);
 
-    bool remove(std::string key);
+    bool remove(string key);
 
-    bool contains(const std::string& key) const;
+    bool contains(const string& key) const;
 
-    std::optional<int> get(const std::string& key) const;
+    optional<int> get(const string& key) const;
 
-    int& operator[](const std::string& key);
+    int& operator[](const string& key);
 
-    std::vector<std::string> HashTable::keys() const;
+    vector<string> keys() const;
 
     double alpha() const;
 
@@ -61,7 +68,7 @@ public:
 
     size_t size() const;
 
-    friend std::ostream& operator<<(std::ostream& os, const HashTable& hashTable);
+    friend ostream& operator<<(ostream& os, const HashTable& hashTable);
 
 }; //end HashTable
 
