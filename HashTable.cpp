@@ -197,11 +197,12 @@ bool HashTable::remove(string key) {
 
 } //end remove
 
- /**
- * contains returns true if the key is in the table and false if the key is not in
- * the table.
+/**
+ * contains probes through the array and returns true if the key is in the table and false if it is not
+ * @param key the string used as a parameter to probe through the table
+ * @return the boolean value if it is or isn't in the table
  */
- bool HashTable::contains(const string& key) const {
+bool HashTable::contains(const string& key) const {
 
  hash<string> hasher;
  size_t tempValue = hasher(key);
