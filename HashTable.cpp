@@ -227,39 +227,75 @@ bool HashTable::contains(const string& key) const {
 } //end contains
 
 /**
- * If the key is found in the table, find will return the value associated with
- * that key. If the key is not in the table, find will return something called
- * nullopt, which is a special value in C++. The find method returns an
- * optional<int>, which is a way to denote a method might not have a valid value
- * to return. This approach is nicer than designating a special value, like -1, to
- * signify the return value is invalid. It's also much better than throwing an
- * exception if the key is not found.
+ * get checks if the key is in the table and, if it is, it returns the value associated with that key
+ * if not, it returns nullop
+ * @param key the string used to probe through the table
+ * @return the value associated with the key or nullopt
  */
- std::optional<int> HashTable::get(const string& key) const {
+optional<int> HashTable::get(const string& key) const {
 
+if (contains(key)) {
+ hash<string> hasher;
+ size_t tempValue = hasher(key);
+ size_t location = (tempValue % capacity());
 
+ if (buckets.at(location).key == key) {
+  return buckets.at(location).value;
+ } //returns the value at the key's location if the key matches initially
+
+ else {
+  for (size_t i = 0; i < offsets.size(); i++) {
+   size_t probe = ((location + offsets[i]) % capacity());
+   if (buckets.at(probe).key == key) {
+    return buckets.at(probe).value;
+   }
+  }
+
+  return nullopt; //error catcher
+
+ } //end else
+
+} //end outer if
+
+else {
+ return nullopt; //returns nullopt if the key is not in the table
+}
 
 } //end get
 
 /**
- * The bracket operator lets us access values in the map using a familiar syntax,
- * similar to C++ std::map or Python dictionaries. It behaves like get, returnin
- * the value associated with a given key:
- int idNum = hashTable[“James”];
- * Unlike get, however, the bracker operator returns a reference to the value,
- * which allows assignment:
- hashTable[“James”] = 1234;
- If the key is not
- * in the table, returning a valid reference is impossible. You may choose to
- * throw an exception in this case, but for our implementation, the situation
- * results in undefined behavior. Simply put, you do not need to address attempts
- * to access keys not in the table inside the bracket operator method.
+ * I'm not too sure about this one but...
+ * operator[] returns a reference to the value found by the provided key parameter
+ * if the key is not in the table, an error would be thrown, but we don't have to worry about that
+ * @param key the string used to probe through the table
+ * @return the reference to the value associated with the key
  */
- int& HashTable::operator[](const string& key) {
+int& HashTable::operator[](const string& key) {
 
+if (contains(key)) {
+ hash<string> hasher;
+ size_t tempValue = hasher(key);
+ size_t location = (tempValue % capacity());
 
+ if (buckets.at(location).key == key) {
+  return buckets.at(location).value;
+ }
 
- } //end operator[]
+ else {
+  for (size_t i = 0; i < offsets.size(); i++) {
+   size_t probe = ((location + offsets[i]) % capacity());
+   if (buckets.at(probe).key == key) {
+    return buckets.at(probe).value;
+   }
+  }
+ }
+} //end outer if
+
+else {
+ //return an error if not found
+}
+
+} //end operator[]
 
 /**
  * keys creates and returns a vector containing all the keys currently occupied in the hash table
