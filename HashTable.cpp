@@ -6,9 +6,8 @@
 #include <string>
 
 /**
-* The default constructor can simply set the bucket type to ESS.
- *
-*/
+ *This version of HashTableBucket is a default constructor that sets key to "", value to 0, and BucketType to ESS
+ */
 HashTableBucket::HashTableBucket() {
 
   key = "";
@@ -18,9 +17,11 @@ HashTableBucket::HashTableBucket() {
 } //end HashTableBucket no parameter constructor
 
 /**
-* A parameterized constructor could initialize the key and value, as
-* well as set the bucket type to NORMAL.
-*/
+ * This version of HashTableBucket is a parameterized constructor to make a new bucket. It takes a provided
+ * string key an int value to make the bucket and sets the BucketType to NORMAL
+ * @param key the string used as they key to decide where to place the value in the hash table
+ * @param value the value to be put in the specifed key in the hash table
+ */
 HashTableBucket::HashTableBucket(std::string key, int value) {
 
  this->key = key;
@@ -30,9 +31,10 @@ HashTableBucket::HashTableBucket(std::string key, int value) {
 } //end HashTableBucket constructor
 
 /**
-* A load method could load the key-value pair into the bucket, which
-* should then also mark the bucket as NORMAL.
-*/
+ * load takes a given key with a value and stores them into the bucket and markes the BucketType as NORMAL
+ * @param key the string used as they key to decide where to place the value in the hash table
+ * @param value the value to be put in the specifed key in the hash table
+ */
 void HashTableBucket::load(std::string key, int value) {
 
  this->key = key;
@@ -42,29 +44,31 @@ void HashTableBucket::load(std::string key, int value) {
 } //end load
 
 /**
-* This method would return whether the bucket is empty, regardless of
-* if it has had data placed in it or not.
-*/
+ * isEmpty returns true if the bucket is currently empty
+ * @return the boolean value expressing if it is empty or not
+ */
 bool HashTableBucket::isEmpty() const {
 
  if (type != BucketType::NORMAL) {
   return true;
- }
+ } //returns true if the bucket is ESS or EAR
 
  else {
   return false;
- }
+ } //returns false if the bucket is NORMAL
 
 } //end isEmpty
 
 /**
-* The stream insertion operator could be overloaded to print the
-* bucket's contents. Or if preferred, you could write a print method
-* instead.
-*/
+ * operator<< prints the key and the value of the provided bucket to the console
+ * @param os ostream used for formatting and printing
+ * @param bucket the provided bucket of the hash table that will have its key and value printed
+ * @return os needed to properly exit the method after printing
+ */
 std::ostream& operator<<(std::ostream& os, const HashTableBucket& bucket) {
 
  os << "The key " << bucket.key << " contains " << bucket.value << std::endl;
+
  return os;
 
 } //end operator<<
