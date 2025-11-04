@@ -101,25 +101,99 @@ HashTable::HashTable(size_t initCapacity) {
 
 } //end HashTable
 
- /**
- * Insert a new key-value pair into the table. Duplicate keys are NOT allowed. The
- * method should return true if the insertion was successful. If the insertion was
- * unsucessful, such as when a duplicate is attempted to be inserted, the method
- * should return false
+/**
+ * insert takes the provided key and corresponding value and attempts to implement them into the hash table
+ * if there is a duplicate, or if the value cannot otherwise be implemented, it returns false and the key/value aren't put in
+ * otherwise, it puts in the value at the key unless it is marked as NORMAL, in which case it iterates through
+ * the offsets vector to put it in the table in a proper location
+ * @param key the string key used for implementation
+ * @param value the size_t value to be stored with the key
+ * @return the boolean value true, if it was inserted properly, or false, if it was not inserted
  */
- bool HashTable::insert(string key, size_t value) {
+bool HashTable::insert(string key, size_t value) {
 
+ if (contains(key)) {
+  return false;
+ } //returns false if key is already in table
 
+ else if (alpha() >= .5) {
+  //IMPLEMENT RESIZE HERE
+ }
+
+ else {
+  hash<string> hasher;
+  size_t tempValue = hasher(key);
+  size_t location = (tempValue % capacity()); //sets location to the proper modulos value in the table based off the total size of the table
+
+  if (buckets.at(location).type != HashTableBucket::BucketType::NORMAL) {
+   buckets.at(location).load(key, value);
+   sizeOfTable++;
+   return true;
+  } //if BucketType is ESS or EAR, load the key and value at that location
+
+  else {
+
+   for (size_t i = 0; i < offsets.size(); i++) {
+    size_t probe = ((location + offsets[i]) % capacity());
+    if (buckets.at(probe).type == HashTableBucket::BucketType::NORMAL) {
+     buckets.at(probe).load(key, value);
+     sizeOfTable++;
+     return true;
+    } //if the current bucket is not type NORMAL, load the key and value at that location
+   } //iterates through the offsets vector until the if condition is met for pseudo-random probing
+
+  } //end inner else
+
+ } //end outer else
+
+return false; //error catcher
 
 } //end insert
 
- /**
- * If the key is in the table, remove will “erase” the key-value pair from the
- * table. This might just be marking a bucket as empty-after-remove
+/**
+ * remove first checks if the table contains the key, and returns false if it doesn't
+ * otherwise, it probes through the table as needed and sets the key and value parameters to the default constructors
+ * and sets the type to EAR
+ * @param key the key being used to probe through the hash table
+ * @return the boolean value true, for the item was removed, or false, if it was not successfully removed
  */
- bool HashTable::remove(string key) {
+bool HashTable::remove(string key) {
 
+ if (contains(key)) {
 
+  hash<string> hasher;
+  size_t tempValue = hasher(key);
+  size_t location = (tempValue % capacity());
+
+  if (buckets.at(location).key == key) {
+   buckets.at(location).key = "";
+   buckets.at(location).value = 0;
+   buckets.at(location).type = HashTableBucket::BucketType::EAR;
+   sizeOfTable--;
+   return true;
+  } //sets bucket to the same as default constructor if found in table
+
+  else {
+   for (size_t i = 0; i < offsets.size(); i++) {
+    size_t probe = ((location + offsets[i]) % capacity());
+    if (buckets.at(probe).key == key) {
+     buckets.at(probe).key = "";
+     buckets.at(probe).value = 0;
+     buckets.at(probe).type = HashTableBucket::BucketType::EAR;
+     sizeOfTable--;
+     return true;
+    } //sets bucket to the same as default constructor if found in table
+   } //probes through table using the offset vector's pseudo-randomness
+
+   return false; // error catcher
+
+  } //end else
+
+ } //end if
+
+ else {
+  return false;
+ } //returns false if contains() returns false
 
 } //end remove
 
@@ -129,7 +203,25 @@ HashTable::HashTable(size_t initCapacity) {
  */
  bool HashTable::contains(const string& key) const {
 
+ hash<string> hasher;
+ size_t tempValue = hasher(key);
+ size_t location = (tempValue % capacity());
 
+ if (buckets.at(location).key == key) {
+  return true;
+ } //checks if key is at the initial location in the table
+
+ else {
+  for (size_t i = 0; i < offsets.size(); i++) {
+   size_t probe = ((location + offsets[i]) % capacity());
+   if (buckets.at(probe).key == key) {
+    return true;
+   } //checks if key is at the current location in the table
+  } //probes through table using the offset vector's pseudo-randomness
+
+  return false; //returns false if the key is not found in the table
+
+ } //end else
 
 } //end contains
 
