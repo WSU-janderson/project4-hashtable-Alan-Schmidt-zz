@@ -1,4 +1,9 @@
-//HashTable setup
+/**
+*Alan Schmidt
+ *Project 4 - Hash Table
+ *This project hopefully fully implements a hash table with all relevant methods
+ *no time to properly test the project so hopefully it works at least somewhat properly
+ */
 
 //includes code from the following libraries
 #include "HashTable.h"
@@ -117,7 +122,7 @@ bool HashTable::insert(string key, size_t value) {
  } //returns false if key is already in table
 
  else if (alpha() >= .5) {
-  //IMPLEMENT RESIZE HERE
+  doubleSize();
  }
 
  else {
@@ -149,6 +154,39 @@ bool HashTable::insert(string key, size_t value) {
 return false; //error catcher
 
 } //end insert
+
+/**
+ * doubleSize copies the size and contents of buckets to temp variables, doubles the size of buckets,
+ * resets the pseudo-random offsets vector, and calls insert on the contents of the temp buckets
+ */
+void HashTable::doubleSize() {
+
+ //sets temporary values assigned to the old buckets' size and values
+ size_t tempSize = buckets.size();
+ vector<HashTableBucket> tempBuckets = buckets;
+
+ sizeOfTable = 0; //resets sizeOfTable to 0
+ buckets.clear(); //empties buckets' contents
+ buckets.resize((tempSize * 2)); //doubles the size of buckets
+
+ //the offsets code copied from my insert method
+ for (size_t i = 0; i < buckets.size(); i++) {
+  offsets.push_back(i);
+ } //adds size_t (i) to offsets vector for shuffling
+
+ //shuffles vector randomly
+ //code referenced from website link in project description
+ random_device rnd;
+ mt19937 gen(rnd());
+ shuffle(offsets.begin(), offsets.end(), gen);
+
+ for (int i = 0; i < tempSize; i++) {
+  insert(tempBuckets.at(i).key, tempBuckets.at(i).value);
+ } //calls insert() on the contents of tempBuckets so they get re-added to buckets properly
+
+ tempBuckets.clear(); //deletes the contents of tempBuckets to maybe save memory?
+
+} //end doubleSize
 
 /**
  * remove first checks if the table contains the key, and returns false if it doesn't

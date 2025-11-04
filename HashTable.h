@@ -1,4 +1,8 @@
-//header file
+/**
+*Alan Schmidt
+ *Project 4 - Hash Table
+ *This header file defines all the methods and variables used in the HashTable.cpp file
+ */
 
 //defines the header file
 #ifndef HashTable_h
@@ -52,6 +56,8 @@ public:
 
     bool insert(string key, size_t value);
 
+    void doubleSize();
+
     bool remove(string key);
 
     bool contains(const string& key) const;
@@ -72,4 +78,4 @@ public:
 
 }; //end HashTable
 
-#endif //end the header file definition
+#endif
